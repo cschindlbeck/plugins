@@ -1,5 +1,6 @@
 import {
   ActionButton,
+  ConditionsTable,
   DateLabel,
   DetailsGrid,
   NameValueTable,
@@ -7,13 +8,12 @@ import {
 } from '@kinvolk/headlamp-plugin/lib/components/common';
 import { useParams } from 'react-router-dom';
 import { KatibTrialClass } from '../../resources/katibTrial';
-import { KubeflowConditionsSection } from '../common/KubeflowConditionsSection';
-import { KubeflowJsonSection } from '../common/KubeflowJsonSection';
+import { KubeflowJsonViewerAction } from '../common/KubeflowJsonViewerAction';
 import { launchKatibTrialLogs } from '../common/KubeflowLogsViewer';
 import { SectionPage } from '../common/SectionPage';
 
 /**
- * Renders the Katib Trial detail view with metrics, conditions, and raw spec data.
+ * Renders the Katib Trial detail view with metrics, conditions, and raw JSON access.
  */
 export function KatibTrialsDetail(props: { namespace?: string; name?: string }) {
   const params = useParams<{ namespace: string; name: string }>();
@@ -44,6 +44,16 @@ export function KatibTrialsDetail(props: { namespace?: string; name?: string }) 
                 />
               ),
             },
+            {
+              id: 'kubeflow.katib-trial-json',
+              action: (
+                <KubeflowJsonViewerAction
+                  title="View Raw JSON"
+                  value={item.jsonData}
+                  activityId={`json-katib-trial-${item.metadata.namespace}-${item.metadata.name}`}
+                />
+              ),
+            },
           ]
         }
         extraInfo={item =>
@@ -63,35 +73,35 @@ export function KatibTrialsDetail(props: { namespace?: string; name?: string }) 
           const metrics = item.status.observation?.metrics ?? [];
 
           return [
-            ...(item.conditions.length > 0
-              ? [
-                {
-                  id: 'conditions',
-                  section: <KubeflowConditionsSection conditions={item.conditions} />,
-                },
-              ]
-              : []),
             ...(metrics.length > 0
               ? [
-                {
-                  id: 'metrics',
-                  section: (
-                    <SectionBox title="Observed Metrics">
-                      <NameValueTable
-                        rows={metrics.map(metric => ({
-                          name: metric.name ?? 'metric',
-                          value: metric.value ?? '-',
-                        }))}
-                      />
-                    </SectionBox>
-                  ),
-                },
-              ]
+                  {
+                    id: 'metrics',
+                    section: (
+                      <SectionBox title="Observed Metrics">
+                        <NameValueTable
+                          rows={metrics.map(metric => ({
+                            name: metric.name ?? 'metric',
+                            value: metric.value ?? '-',
+                          }))}
+                        />
+                      </SectionBox>
+                    ),
+                  },
+                ]
               : []),
-            {
-              id: 'spec-preview',
-              section: <KubeflowJsonSection title="Raw Spec Preview" value={item.spec} />,
-            },
+            ...(item.conditions.length > 0
+              ? [
+                  {
+                    id: 'conditions',
+                    section: (
+                      <SectionBox title="Conditions">
+                        <ConditionsTable resource={item.jsonData} />
+                      </SectionBox>
+                    ),
+                  },
+                ]
+              : []),
           ];
         }}
       />
