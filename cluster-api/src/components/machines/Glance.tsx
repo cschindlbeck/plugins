@@ -30,7 +30,7 @@ export function MachineGlance({ node }: { node: GraphNode }) {
     spec.clusterName || data.metadata?.labels?.['cluster.x-k8s.io/cluster-name'] || 'Unknown';
   const version: string | undefined = spec.version;
 
-  const readyCondition = getCondition(conditions, 'Ready');
+  const readyCondition = getCondition(conditions, 'Available') ?? getCondition(conditions, 'Ready');
 
   const internalIP = status.addresses?.find(addr => addr.type === 'InternalIP')?.address || null;
   const externalIP = status.addresses?.find(addr => addr.type === 'ExternalIP')?.address || null;

@@ -40,7 +40,7 @@ export function MachineDeploymentGlance({ node }: { node: GraphNode }) {
   const provider = spec?.template?.spec?.infrastructureRef?.kind;
 
   const conditions = getMachineDeploymentConditions(data);
-  const readyCondition = getCondition(conditions, 'Ready');
+  const readyCondition = getCondition(conditions, 'Available') ?? getCondition(conditions, 'Ready');
   const isReady = readyCondition?.status === 'True';
 
   return (

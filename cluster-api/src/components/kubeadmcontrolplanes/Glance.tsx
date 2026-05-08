@@ -47,7 +47,7 @@ export function KubeadmControlPlaneGlance({ node }: { node: GraphNode }) {
   const provider = infraRef?.kind;
 
   const conditions = getKCPConditions(data);
-  const readyCondition = getCondition(conditions, 'Ready');
+  const readyCondition = getCondition(conditions, 'Available') ?? getCondition(conditions, 'Ready');
   const isReady = readyCondition?.status === 'True';
 
   // Derive a phase-like label from replica state

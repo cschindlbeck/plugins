@@ -29,7 +29,8 @@ export function MachineHealthCheckGlance({ node }: { node: GraphNode }) {
   const healthy = status?.currentHealthy;
   const hasHealthCounts = typeof expected === 'number' && typeof healthy === 'number';
 
-  const maxUnhealthy = spec?.maxUnhealthy ?? '100%';
+  const maxUnhealthy = spec?.maxUnhealthy;
+  const unhealthyRange = spec?.unhealthyRange;
   const nodeStartupTimeout =
     spec?.nodeStartupTimeout || spec?.checks?.nodeStartupTimeoutSeconds || 'Unknown';
 
@@ -41,7 +42,12 @@ export function MachineHealthCheckGlance({ node }: { node: GraphNode }) {
       >
         {hasHealthCounts ? `Healthy: ${healthy}/${expected}` : 'Healthy: unknown'}
       </StatusLabel>
-      <StatusLabel status="">{`Max Unhealthy: ${maxUnhealthy}`}</StatusLabel>
+      {maxUnhealthy !== undefined && maxUnhealthy !== null && (
+        <StatusLabel status="">{`Max Unhealthy: ${maxUnhealthy}`}</StatusLabel>
+      )}
+      {unhealthyRange && (
+        <StatusLabel status="">{`Unhealthy Range: ${unhealthyRange}`}</StatusLabel>
+      )}
       <StatusLabel status="">{`Timeout: ${nodeStartupTimeout}`}</StatusLabel>
     </Box>
   );

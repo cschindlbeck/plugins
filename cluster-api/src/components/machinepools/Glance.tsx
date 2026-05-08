@@ -37,7 +37,7 @@ export function MachinePoolGlance({ node }: { node: GraphNode }) {
   const provider = spec?.template?.spec?.infrastructureRef?.kind || 'Unknown';
 
   const conditions = getMachinePoolConditions(data);
-  const readyCondition = getCondition(conditions, 'Ready');
+  const readyCondition = getCondition(conditions, 'Available') ?? getCondition(conditions, 'Ready');
   const isReady = readyCondition?.status === 'True';
 
   return (

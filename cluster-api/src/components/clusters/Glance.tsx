@@ -44,7 +44,7 @@ export function ClusterGlance({ node }: { node: GraphNode }) {
   const workerStatus = getClusterWorkerStatus(data);
 
   const conditions = getClusterConditions(data);
-  const readyCondition = getCondition(conditions, 'Ready');
+  const readyCondition = getCondition(conditions, 'Available') ?? getCondition(conditions, 'Ready');
   const isReady = readyCondition?.status === 'True';
 
   const k8sVersion = spec.topology?.version ?? null;
