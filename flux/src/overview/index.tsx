@@ -711,7 +711,7 @@ function FluxOverviewChart({ resourceClass }) {
       const [success, failed, suspended, processing] = getStatus(crds);
 
       // Calculate actual percentages
-      const successPercent = total > 0 ? Math.round((success / total) * 100) : 0;
+      const successPercent = total > 0 ? Math.round((success / total) * 100) : 100;
       const failedPercent = total > 0 ? Math.round((failed / total) * 100) : 0;
       const suspendedPercent = total > 0 ? Math.round((suspended / total) * 100) : 0;
       const processingPercent = total > 0 ? Math.round((processing / total) * 100) : 0;
